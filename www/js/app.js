@@ -28,6 +28,7 @@ angular.module('upet', ['ionic','firebase', 'upet.controllers', 'upet.factory'])
         $rootScope.getNumber = function(num) {
             return new Array(num);
         }
+       
         $rootScope.checkSession = function() {
             var auth = new FirebaseSimpleLogin(authRef, function(error, user) {
                 if (error) {

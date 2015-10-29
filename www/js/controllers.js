@@ -1,5 +1,4 @@
 angular.module('upet.controllers', [])
-
 .controller('AppCtrl', ['$rootScope', '$ionicModal', 'AuthFactory', '$location', 'UserFactory', '$scope', 'Loader', '$firebaseAuth',
     function($rootScope, $ionicModal, AuthFactory, $location, UserFactory, $scope, Loader, $firebaseAuth) {
         $rootScope.checkSession();
@@ -8,17 +7,13 @@ angular.module('upet.controllers', [])
                 email: '',
                 password: ''
             };
-
             $scope = scope || $scope;
-
             $scope.viewLogin = true;
-
             $ionicModal.fromTemplateUrl('templates/login.html', {
                 scope: $scope
             }).then(function(modal) {
                 $scope.modal = modal;
                 $scope.modal.show();
-
                 $scope.switchTab = function(tab) {
                     if (tab === 'login') {
                         $scope.viewLogin = true;
@@ -26,16 +21,13 @@ angular.module('upet.controllers', [])
                         $scope.viewLogin = false;
                     }
                 }
-
                 $scope.hide = function() {
                     $scope.modal.hide();
                     if (typeof cancelCallback === 'function') {
                         cancelCallback();
                     }
                 }
-
                 $scope.login = function() {
-                    
                     var email = this.user.email;
                     var password = this.user.password;
                     if (!email || !password) {
@@ -69,9 +61,7 @@ angular.module('upet.controllers', [])
 
                   }); 
                 }
-
                 $scope.register = function() {
-                    
                     var email = this.user.email;
                     var password = this.user.password;
                     if (!email || !password) {
@@ -103,33 +93,61 @@ angular.module('upet.controllers', [])
                 }
             });
         });
-
         $rootScope.loginFromMenu = function() {
             $rootScope.$broadcast('showLoginModal', $scope, null, null);
         }
-
         $rootScope.logout = function() {
+            $rootScope.auth.$logout();
+            $rootScope.checkSession();
             UserFactory.logout();
             $rootScope.isAuthenticated = false;
             $location.path('/app/welcome');
             Loader.toggleLoadingWithMessage('Sesión cerrada con éxito !', 2000);
         }
+    }
+])
+.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader',
+    function($scope, BooksFactory, LSFactory, Loader) {
 
+        Loader.showLoading();
+
+        // support for pagination
+        var page = 1;
+        $scope.pets = [];
+        var pets = LSFactory.getAll();
+
+        // if books exists in localStorage, use that instead of making a call
+        if (pets.length > 0) {
+            $scope.pets = pets;
+            Loader.hideLoading();
+        } else {
+            PetsFactory.get(page).success(function(data) {
+
+                // process books and store them 
+                // in localStorage so we can work with them later on, 
+                // when the user is offline
+                processPets(data.data.pets);
+
+                $scope.pets = data.data.pets;
+                $scope.$broadcast('scroll.infiniteScrollComplete');
+                Loader.hideLoading();
+            }).error(function(err, statusCode) {
+                Loader.hideLoading();
+                Loader.toggleLoadingWithMessage(err.message);
+            });
+        }
+
+        function processPets(pets) {
+            LSFactory.clear();
+            // we want to save each book individually
+            // this way we can access each book info. by it's _id
+            for (var i = 0; i < pets.length; i++) {
+                LSFactory.set(pets[i]._id, pets[i]);
+            };
+        }
 
     }
 ])
-
-.controller('PetlistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
-})
-
 .controller('PetCtrl', function($scope, $stateParams) {
 });
 function escapeEmailAddress(email) {

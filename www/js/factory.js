@@ -104,9 +104,7 @@ angular.module('upet.factory', [])
 }])
 
 
-.factory('BooksFactory', ['$http', function($http) {
-
-    var perPage = 30;
+.factory('PetsFactory', ['$http', function($http) {
 
     var API = {
         get: function(page) {
@@ -122,14 +120,7 @@ angular.module('upet.factory', [])
 
         var UserAPI = {
 
-            login: function(user) {
-                return $http.post(base + '/login', user);
-            },
-
-            register: function(user) {
-                return $http.post(base + '/register', user);
-            },
-
+            
             logout: function() {
                 AuthFactory.deleteAuth();
             },

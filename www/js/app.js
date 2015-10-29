@@ -1,58 +1,59 @@
-angular.module('upet', ['ionic','firebase', 'upet.controllers', 'upet.factory'])
+var app = angular.module('upet', [
+  'ionic',
+  'upet.controllers',
+  'upet.factory',
+  'ngMessages',
+  'ngCordova',
+  'angularMoment',
+  'parse-angular',
+  'parse-angular.enhance',
+  'upet.controllers.meals',
+  'upet.controllers.account',
+  'upet.services.authentication',
+  'upet.services.meals',
+  'upet.filters.mealtime'
+]);
 
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
+app.run(function ($ionicPlatform) {
+  $ionicPlatform.ready(function () {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
-
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+      StatusBar.styleBlackTranslucent();
     }
   });
-})
-.run(['$rootScope', 'AuthFactory','$firebaseAuth','$firebase','$window',
-    function($rootScope, AuthFactory,$firebaseAuth,$firebase, $window) {
+
+    // Initialise Parse
+  Parse.initialize("pGjRYW5wooTCRNAX9zEtXZn3YeExbeBjSsA1I7KT", "JZoYvYpIQXn1dhpM7nE2tT5wT7Rn4cBtfCZwJVBK");
+  
+
+});
+app.run(['$rootScope', 'AuthFactory','$window',
+    function($rootScope, AuthFactory, $window) {
 
         $rootScope.isAuthenticated = AuthFactory.isLoggedIn();
         $rootScope.userEmail = null;
-        $rootScope.baseUrl = 'https://udea.firebaseio.com/';
-        var authRef = new Firebase($rootScope.baseUrl);
-        $rootScope.auth = $firebaseAuth(authRef);
-
+        var currentUser = Parse.User.current();
+  
+        if (currentUser) {
+            $rootScope.user = currentUser;
+            $window.location.href = '#/app/welcome';
+        }
         // utility method to convert number to an array of elements
         $rootScope.getNumber = function(num) {
             return new Array(num);
         }
-       
-        $rootScope.checkSession = function() {
-            var auth = new FirebaseSimpleLogin(authRef, function(error, user) {
-                if (error) {
-                    // no action yet.. redirect to default route
-                    $rootScope.userEmail = null;
-                    $window.location.href = '#/app/welcome';
-                } else if (user) {
-                    // user authenticated with Firebase
-                    $rootScope.userEmail = user.email;
-                    $window.location.href = ('#/app/petlist');
-                } else {
-                    // user is logged out
-                    $rootScope.userEmail = null;
-                    $window.location.href = '#/app/welcome';
-                }
-            });
-        }
 
     }
-])
-.config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
+]);
 
-    .state('app', {
+app.config(function ($stateProvider, $urlRouterProvider) {
+  $stateProvider
+     .state('app', {
     url: '/app',
     abstract: true,
     templateUrl: 'templates/menu.html',
@@ -87,4 +88,5 @@ angular.module('upet', ['ionic','firebase', 'upet.controllers', 'upet.factory'])
     }
   });
   $urlRouterProvider.otherwise('/app/welcome');
+
 });

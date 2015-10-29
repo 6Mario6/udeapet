@@ -25,7 +25,7 @@ angular.module('upet.factory', [])
 
             $timeout(function() {
                 self.hideLoading();
-            }, timeout || 1000);
+            }, timeout || 2000);
         }
 
     };

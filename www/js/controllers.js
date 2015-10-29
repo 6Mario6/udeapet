@@ -1,11 +1,12 @@
-angular.module('upet.controllers', [])
-.controller('AppCtrl', ['$rootScope', '$ionicModal', 'AuthFactory', '$location', 'UserFactory', '$scope', 'Loader', '$firebaseAuth',
-    function($rootScope, $ionicModal, AuthFactory, $location, UserFactory, $scope, Loader, $firebaseAuth) {
-        $rootScope.checkSession();
-        $rootScope.$on('showLoginModal', function($event, scope, cancelCallback, callback) {
-            $scope.user = {
-                email: '',
-                password: ''
+var app =angular.module('upet.controllers', []);
+app.controller('AppCtrl', ['$rootScope', '$ionicModal', 'AuthFactory', '$location', 'UserFactory', '$scope', 'Loader', 'AuthService',
+    function($rootScope, $ionicModal, AuthFactory, $location, UserFactory, $scope, Loader,AuthService) {
+       
+           $rootScope.$on('showLoginModal', function($event, scope, cancelCallback, callback) {
+           $scope.user = {
+                "name": "",
+                "email": "",
+                "password": ""
             };
             $scope = scope || $scope;
             $scope.viewLogin = true;
@@ -34,62 +35,35 @@ angular.module('upet.controllers', [])
                       Loader.showLoading("Por favor ingresar campos validos");
                       return false;
                      }
-                    Loader.showLoading('Ingresando...');
-                    $rootScope.auth.$login('password', {
-                      email: email,
-                      password: password
-                    }).then(function(user) {
-                        $rootScope.userEmail = user.email;
-                        AuthFactory.setUser(user);
+                   
+                    AuthService.login($scope.user.email, $scope.user.password)
+                    .then(function (user) {
+                        $rootScope.userEmail = $scope.user.email;
                         $rootScope.isAuthenticated = true;
                         $scope.modal.hide();
-                        Loader.hideLoading();
-                         if (typeof callback === 'function') {
-                            callback();
-                        }
-                    }, function(error) {
-                        Loader.hideLoading();
-                      if (error.code == 'INVALID_EMAIL') {
-                        Loader.toggleLoadingWithMessage('Email incorrecto');
-                      } else if (error.code == 'INVALID_PASSWORD') {
-                        Loader.toggleLoadingWithMessage('Contraseña incorrecta');
-                      } else if (error.code == 'INVALID_USER') {
-                        Loader.toggleLoadingWithMessage('Usuario incorrecto');
-                      } else {
-                        Loader.toggleLoadingWithMessage('Oops something went wrong. Please try again later');
-                      }
+                         
+                    });
 
-                  }); 
                 }
                 $scope.register = function() {
+                    var name = this.user.name;
                     var email = this.user.email;
                     var password = this.user.password;
-                    if (!email || !password) {
-                      Loader.showLoading("Por favor ingresar campos validos");
+            
+                    if (!name||!email || !password) {
+                      Loader.toggleLoadingWithMessage("Por favor ingresar campos validos");
                       return false;
                      }
-                    Loader.showLoading('Registrando...');
-                    $rootScope.auth.$createUser(email, password, function(error, user) {
-                      if (!error) {
+                    AuthService.signup($scope.user.email,
+                    $scope.user.name,
+                    $scope.user.password)
+                     .then(function(user) {
+                        $rootScope.userEmail = user.email;
                         AuthFactory.setUser(user);
                         $rootScope.isAuthenticated = true;
-                        $rootScope.userEmail = user.email;
-                        Loader.hideLoading();
                         $scope.modal.hide();
-                        if (typeof callback === 'function') {
-                            callback();
-                        }   
-                      } else {
-                         Loader.hideLoading();
-                        if (error.code == 'INVALID_EMAIL') {
-                           Loader.toggleLoadingWithMessage('Invalid Email Address');
-                        } else if (error.code == 'EMAIL_TAKEN') {
-                           Loader.toggleLoadingWithMessage('Email Address already taken');
-                        } else {
-                           Loader.toggleLoadingWithMessage('Oops something went wrong. Please try again later');
-                        }
-                      }
                     });
+
                 }
             });
         });
@@ -97,16 +71,16 @@ angular.module('upet.controllers', [])
             $rootScope.$broadcast('showLoginModal', $scope, null, null);
         }
         $rootScope.logout = function() {
-            $rootScope.auth.$logout();
-            $rootScope.checkSession();
-            UserFactory.logout();
-            $rootScope.isAuthenticated = false;
-            $location.path('/app/welcome');
-            Loader.toggleLoadingWithMessage('Sesión cerrada con éxito !', 2000);
-        }
+        Parse.User.logOut();
+        Loader.toggleLoadingWithMessage('Sesión cerrada con éxito !', 2000);
+        UserFactory.logout();
+        $rootScope.isAuthenticated = false;
+        $location.path('/app/welcome');
+     
+        };
     }
-])
-.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader',
+]);
+app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader',
     function($scope, BooksFactory, LSFactory, Loader) {
 
         Loader.showLoading();
@@ -147,8 +121,8 @@ angular.module('upet.controllers', [])
         }
 
     }
-])
-.controller('PetCtrl', function($scope, $stateParams) {
+]);
+app.controller('PetCtrl', function($scope, $stateParams) {
 });
 function escapeEmailAddress(email) {
     if (!email) return false

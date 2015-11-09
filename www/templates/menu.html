@@ -26,23 +26,29 @@
                   </div>
                 </div>
                 <ion-item menu-close href="#/app/welcome">
-                    Inicio
+                <span class="item-icon-left"><i class="icon ion-home"></i>
+                 Inicio</span>     
                 </ion-item>
                 <ion-item menu-close ng-show="isAuthenticated" href="#/app/petlist">
-                    Mis mascotas
+                <span class="item-icon-left"><i class="icon ion-ios-paw"></i>
+                  Mis mascotas</span>
                 </ion-item>
                 <ion-item menu-close ng-show="isAuthenticated" href="#/app/activity">
-                    Actividades
+                <span class="item-icon-left"><i class="icon icon ion-clipboard"></i>
+                Actividades</span>
                 </ion-item>
                 <ion-item menu-close 
                 ng-show="isAuthenticated" href="#/app/locations">
-                    Lugares
+                <span class="item-icon-left"><i class="icon ion-location"></i>
+                Lugares</span>
                 </ion-item>
                 <ion-item menu-close ng-show="isAuthenticated" ng-click="logout()">
-                    Logout
+                <span class="item-icon-left"><i class="icon ion-locked"></i>
+                Logout</span>
                 </ion-item>
                 <ion-item menu-close ng-hide="isAuthenticated" ng-click="loginFromMenu()">
-                    Login
+                    <span class="item-icon-left"><i class="icon ion-locked"></i>
+                    Login</span>
                 </ion-item>
             </ion-list>
         </ion-content>

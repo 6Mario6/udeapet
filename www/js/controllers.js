@@ -83,51 +83,8 @@ app.controller('AppCtrl', ['$rootScope', '$ionicModal', 'AuthFactory', '$locatio
 app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader',
     function($scope, BooksFactory, LSFactory, Loader) {
 
-        Loader.showLoading();
-
-        // support for pagination
-        var page = 1;
-        $scope.pets = [];
-        var pets = LSFactory.getAll();
-
-        // if books exists in localStorage, use that instead of making a call
-        if (pets.length > 0) {
-            $scope.pets = pets;
-            Loader.hideLoading();
-        } else {
-            PetsFactory.get(page).success(function(data) {
-
-                // process books and store them 
-                // in localStorage so we can work with them later on, 
-                // when the user is offline
-                processPets(data.data.pets);
-
-                $scope.pets = data.data.pets;
-                $scope.$broadcast('scroll.infiniteScrollComplete');
-                Loader.hideLoading();
-            }).error(function(err, statusCode) {
-                Loader.hideLoading();
-                Loader.toggleLoadingWithMessage(err.message);
-            });
-        }
-
-        function processPets(pets) {
-            LSFactory.clear();
-            // we want to save each book individually
-            // this way we can access each book info. by it's _id
-            for (var i = 0; i < pets.length; i++) {
-                LSFactory.set(pets[i]._id, pets[i]);
-            };
-        }
 
     }
 ]);
 app.controller('PetCtrl', function($scope, $stateParams) {
 });
-function escapeEmailAddress(email) {
-    if (!email) return false
-    // Replace '.' (not allowed in a Firebase key) with ','
-    email = email.toLowerCase();
-    email = email.replace(/\./g, ',');
-    return email.trim();
-}

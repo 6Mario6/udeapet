@@ -14,10 +14,13 @@ app.service('AuthService', function ($q, $ionicPopup,Loader) {
 					d.resolve(self.user);
 				},
 				error: function (user, error) {
-					$ionicPopup.alert({
-						title: 'Login Error',
-						subTitle: error.message
-					});
+					if (error.code === 125) {
+                  	 	Loader.toggleLoadingWithMessage('Por favor, ingrese una dirección de correo electrónico válida');
+                	} else if (error.code === 202) {
+                    	Loader.toggleLoadingWithMessage('La dirección de correo electrónico ya está registrada');
+                	} else {
+                   		 Loader.toggleLoadingWithMessage( error.message);
+                	}
 					d.reject(error);
 				}
 			});

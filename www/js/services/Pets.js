@@ -1,6 +1,6 @@
-var app = angular.module('upet.services.meals', []);
+var app = angular.module('upet.services.pets', []);
 
-app.service("MealService", function ($q, AuthService) {
+app.service("PetService", function ($q, AuthService) {
 	var self = {
 		'page': 0,
 		'page_size': 20,
@@ -25,21 +25,21 @@ app.service("MealService", function ($q, AuthService) {
 			var d = $q.defer();
 
 			// Initialise Query
-			var Meal = Parse.Object.extend("Meal");
-			var mealQuery = new Parse.Query(Meal);
-			mealQuery.descending('created');
-			mealQuery.equalTo("owner", AuthService.user);
+			var Pet = Parse.Object.extend("Pet");
+			var petQuery = new Parse.Query(Pet);
+			petQuery.descending('created');
+			petQuery.equalTo("owner", AuthService.user);
 
 			// Paginate
-			mealQuery.skip(self.page * self.page_size);
-			mealQuery.limit(self.page_size);
+			petQuery.skip(self.page * self.page_size);
+			petQuery.limit(self.page_size);
 
 			// Perform the query
-			mealQuery.find({
+			petQuery.find({
 				success: function (results) {
 					angular.forEach(results, function (item) {
-						var meal = new Meal(item);
-						self.results.push(meal)
+						var Pet = new Pet(item);
+						self.results.push(Pet)
 					});
 					console.debug(self.results);
 
@@ -59,27 +59,30 @@ app.service("MealService", function ($q, AuthService) {
 			self.isSaving = true;
 			var d = $q.defer();
 
-			var Meal = Parse.Object.extend("Meal");
+			var Pet = Parse.Object.extend("Pet");
 			var user = AuthService.user;
 			var file = data.picture ? new Parse.File("photo.jpg", {base64: data.picture}) : null;
 
-			var meal = new Meal();
-			meal.set("owner", user);
-			meal.set("picture", file);
-			meal.set("title", data.title);
-			meal.set("category", data.category);
-			meal.set("calories", parseInt(data.calories));
-			meal.set("created", new Date());
+			var Pet = new Pet();
+			Pet.set("owner", user);
+			Pet.set("picture", file);
+			Pet.set("idm", data.idm);
+			Pet.set("name", data.name);
+			Pet.set("species", data.species);
+			Pet.set("breed", data.breed);
+			Pet.set("gender", data.gender);
+			Pet.set("birthdate", data.birthdate);
+			
 
-			meal.save(null, {
-				success: function (meal) {
-					console.log("Meal tracked");
-					self.results.unshift(meal);
-					d.resolve(meal);
+			Pet.save(null, {
+				success: function (Pet) {
+					console.log("Pet tracked");
+					self.results.unshift(Pet);
+					d.resolve(Pet);
 				},
 				error: function (item, error) {
 					$ionicPopup.alert({
-						title: "Error saving meal",
+						title: "Error saving Pet",
 						subTitle: error.message
 					});
 					d.reject(error);

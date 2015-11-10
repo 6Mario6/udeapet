@@ -1,0 +1,81 @@
+<ion-view view-title="Agregar Mascota">
+	
+<div class="modal slide-in-up" ng-controller="newCtrl">
+	<header class="bar bar-header bar-secondary bar-royal">
+			<button class="button button-clear button-primary" ng-click="close()">Cancelar</button>
+			<h1 class="title">Nueva Mascota</h1>
+			<button class="button button-icon ion-camera" ng-click="addPicture()"></button>
+			
+	</header>
+	<ion-content class="padding has-header">
+   	<form ng-submit="trackPet(createForm)">
+   		<ion-list>
+   		<label class="item item-input ">
+			<span class="input-label" >Codigo ID:</span >
+			<input type="text"
+			placeholder="FDXXXX"
+			ng-model="formData.idm"
+			ng-required="true" >
+		</label >
+		<label class="item item-input ">
+			<span class="input-label" >Nombre Mascota:</span >
+			<input type="text"
+			placeholder="Tobi"
+			ng-model="formData.name"
+			ng-required="true" >
+		</label >
+		<label class="item item-input ">
+			<span class="input-label" >Especie:</span >
+			<input type="text"
+			placeholder="Perro"
+			ng-model="formData.species"
+			ng-required="true" >
+		</label >
+		<label class="item item-input ">
+			<span class="input-label" >Raza:</span >
+			<input type="text"
+			placeholder="Chow Chow"
+			ng-model="formData.breed"
+			ng-required="true" >
+		</label >
+
+		<label class="item item-input item-select">
+			<div class="input-label" >
+			Genero
+			</div >
+			<select name="category"
+			ng-model="formData.gender"
+			ng-required="true" >
+			<option selected value="" >Please Choose
+			</option >
+			<option value="Femenino" >Femenino</option >
+			<option value="Masculino" >Masculino</option >
+			</select >
+		</label >
+		<div class="form-group">
+				<ionic-datepicker input-obj="datepickerObject">
+				<a class="item item-icon-left">
+					<i class="icon ion-calendar"></i>
+					Fecha de nacimiento:  {{datepickerObject.inputDate | date:'dd - MMMM - yyyy'}}
+				</a>
+			</ionic-datepicker>
+		</div>
+   		</ion-list>
+   		<div class="padding" ng-show="formData.picture">
+				<div class="picture">
+					<img ng-src="data:image/jpeg;base64,{{formData.picture}}"
+					     alt="" />
+				</div >
+			</div>
+
+			<div class="padding" >
+				<button class="button button-royal button-block"
+				        type="submit" >Crear
+				</button >
+			</div >
+   	</form>
+  </ion-content>
+</div>
+
+ 
+</ion-view>

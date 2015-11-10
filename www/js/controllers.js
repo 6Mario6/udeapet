@@ -80,11 +80,83 @@ app.controller('AppCtrl', ['$rootScope', '$ionicModal', 'AuthFactory', '$locatio
         };
     }
 ]);
-app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader',
-    function($scope, BooksFactory, LSFactory, Loader) {
+app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader','$ionicModal',
+    function($scope, BooksFactory, LSFactory, Loader,$ionicModal) {
+        $scope.pets = [];
+        $scope.noData = true;
+
+        $ionicModal.fromTemplateUrl('templates/newPet.html', function(modal) {
+        $scope.newTemplate = modal;
+        });
+       $scope.newPet = function() {
+        $scope.newTemplate.show();
+        };
 
 
     }
 ]);
 app.controller('PetCtrl', function($scope, $stateParams) {
+});
+app.controller('newCtrl', function($rootScope, $ionicPopup, $ionicLoading, $scope, $window, Loader,PetService) {
+  
+ $scope.datepickerObject = {
+      titleLabel: 'Fecha de nacimiento', 
+      todayLabel: 'Hoy',  
+      closeLabel: 'Cerrar',  
+      setLabel: 'OK',  
+      setButtonType : 'button-royal',  
+      todayButtonType : 'button-royal',  
+      closeButtonType : 'button-royal',  
+      inputDate: new Date(),   
+      mondayFirst: true,  
+      templateType: 'popup', 
+      showTodayButton: 'false', 
+      modalHeaderColor: 'bar-positive',
+      modalFooterColor: 'bar-positive', 
+      from: new Date(1988, 8, 2),  
+      to: new Date(2018, 8, 25),   
+      callback: function (val) {    
+        datePickerCallback(val);
+      }
+    };
+
+  var datePickerCallback = function (val) {
+  if (typeof(val) === 'undefined') {
+    console.log('No date selected');
+  } else {
+    $scope.datepickerObject.inputDate = val;
+  }
+};
+
+$scope.resetFormData = function () {
+        $scope.formData = {
+            'idm': '',
+            'name': '',
+            'species': '',
+            'breed': '',
+            'gender': '',
+            'birthdate': '',
+            'picture': null
+        };
+    };
+$scope.resetFormData();
+
+$scope.trackPet = function (form) {
+      
+            console.log("newCtrl::trackPet");
+
+            $ionicLoading.show();
+            PetService.track($scope.formData).then(function () {
+                $scope.resetFormData();
+                $ionicLoading.hide();
+                form.$setPristine(true);
+               // $state.go("tab.meals");
+            });
+        
+};
+
+  $scope.close = function() {
+    $scope.modal.hide();
+  };
+
 });

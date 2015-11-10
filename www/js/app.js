@@ -4,14 +4,14 @@ var app = angular.module('upet', [
   'upet.factory',
   'ngMessages',
   'ngCordova',
+  'ionic-datepicker',
   'angularMoment',
   'parse-angular',
   'parse-angular.enhance',
   'upet.controllers.meals',
   'upet.controllers.account',
   'upet.services.authentication',
-  'upet.services.meals',
-  'upet.filters.mealtime'
+  'upet.services.pets'
 ]);
 
 app.run(function ($ionicPlatform) {
@@ -35,11 +35,11 @@ app.run(function ($ionicPlatform) {
 app.run(['$rootScope', 'AuthFactory','$window',
     function($rootScope, AuthFactory, $window) {
 
-        $rootScope.isAuthenticated = AuthFactory.isLoggedIn();
         $rootScope.userEmail = null;
         var currentUser = Parse.User.current();
   
         if (currentUser) {
+            $rootScope.isAuthenticated = true;
             $rootScope.user = currentUser;
             $window.location.href = '#/app/welcome';
         }

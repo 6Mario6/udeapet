@@ -1,9 +1,31 @@
-<ion-view view-title="Mis Mascotas">
-  <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
-        {{playlist.title}}
-      </ion-item>
-    </ion-list>
+<ion-view view-title="Mascotas">
+ <div class="bar bar-subheader item-input-inset
+      bar-light">
+      <label class="item-input-wrapper">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" ng-model="query" placeholder="Search">
+      </lable>
+ </div>
+  <ion-content class="has-subheader" scroll="true">
+   <ion-list ng-hide="noData">
+   	<ion-item ng-repeat='item in pets | filter:query' class="item item-avatar" >
+       <img src="img/ionic.png">
+       <h2>{{item.name}}</h2>
+        <p>{{item.species}}</p>
+         <ion-delete-button class="ion-minus-circled" ></ion-delete-button>
+   		 </ion-item>
+      
+       <div class="list" style="text-align:center">
+    <button class="button  button-outline button-royal activated" ng-click="newPet()" >Nueva mascota</button>
+  </div>
+
+   </ion-list>
+   
+   <div class="card" ng-show="noData" >
+      <div class="item item-text-wrap" ><span>
+         No hay mascotas agregadas. Click  <a href="javascript:" ng-click="newPet()">aqui</a> para ingresar mascota.
+         </span>
+      </div>
+   </div>
   </ion-content>
 </ion-view>

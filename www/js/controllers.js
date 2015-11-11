@@ -142,15 +142,20 @@ $scope.resetFormData = function () {
 $scope.resetFormData();
 
 $scope.trackPet = function (form) {
-      
+        $scope.formData.birthdate = $scope.datepickerObject.inputDate ;
+        
             console.log("newCtrl::trackPet");
+            if (!$scope.formData.name  ||!$scope.formData.idm  || !$scope.formData.species|| !$scope.formData.breed|| !$scope.formData.gender|| !$scope.formData.birthdate) {
+             Loader.toggleLoadingWithMessage("Por favor ingrese los datos", 2000);
+            return false;
+            }
 
             $ionicLoading.show();
             PetService.track($scope.formData).then(function () {
                 $scope.resetFormData();
                 $ionicLoading.hide();
-                form.$setPristine(true);
-               // $state.go("tab.meals");
+              
+
             });
         
 };

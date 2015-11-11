@@ -81,10 +81,7 @@ app.service("PetService", function ($q, AuthService) {
 					d.resolve(Pet);
 				},
 				error: function (item, error) {
-					$ionicPopup.alert({
-						title: "Error saving Pet",
-						subTitle: error.message
-					});
+					
 					d.reject(error);
 				}
 			});

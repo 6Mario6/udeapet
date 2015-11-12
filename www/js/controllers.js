@@ -80,24 +80,38 @@ app.controller('AppCtrl', ['$rootScope', '$ionicModal', 'AuthFactory', '$locatio
         };
     }
 ]);
-app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader','$ionicModal',
-    function($scope, BooksFactory, LSFactory, Loader,$ionicModal) {
-        $scope.pets = [];
-        $scope.noData = true;
-
-        $ionicModal.fromTemplateUrl('templates/newPet.html', function(modal) {
-        $scope.newTemplate = modal;
+app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader','$ionicModal','PetService','$ionicLoading',
+    function($scope, PetsFactory, LSFactory, Loader,$ionicModal,PetService,$ionicLoading) {
+        $scope.pets = PetService;
+        $ionicLoading.show();
+        $scope.pets.load().then(function () {
+        $ionicLoading.hide();
+       
+        if ($scope.pets.results.length == 0) {
+            $scope.noData=true;
+        }else{
+            $scope.noData=false;
+        }
+         
         });
-       $scope.newPet = function() {
-        $scope.newTemplate.show();
+
+        $scope.refreshItems = function () {
+        $scope.pets.refresh().then(function () {
+            $scope.$broadcast('scroll.refreshComplete');
+        });
         };
 
+        $scope.nextPage = function () {
+        $scope.pets.next().then(function () {
+            $scope.$broadcast('scroll.refreshComplete');
+        });
+        };
 
     }
 ]);
 app.controller('PetCtrl', function($scope, $stateParams) {
 });
-app.controller('newCtrl', function($rootScope, $ionicPopup, $ionicLoading, $scope, $window, Loader,PetService) {
+app.controller('newCtrl', function($rootScope,$state, $ionicPopup, $ionicLoading, $scope, $window, Loader,PetService) {
   
  $scope.datepickerObject = {
       titleLabel: 'Fecha de nacimiento', 
@@ -129,8 +143,7 @@ app.controller('newCtrl', function($rootScope, $ionicPopup, $ionicLoading, $scop
 };
 
 $scope.resetFormData = function () {
-        $scope.formData = {
-            'idm': '',
+        $scope.formData = {  
             'name': '',
             'species': '',
             'breed': '',
@@ -145,23 +158,19 @@ $scope.trackPet = function (form) {
         $scope.formData.birthdate = $scope.datepickerObject.inputDate ;
         
             console.log("newCtrl::trackPet");
-            if (!$scope.formData.name  ||!$scope.formData.idm  || !$scope.formData.species|| !$scope.formData.breed|| !$scope.formData.gender|| !$scope.formData.birthdate) {
+            if (!$scope.formData.name   || !$scope.formData.species|| !$scope.formData.breed|| !$scope.formData.gender|| !$scope.formData.birthdate) {
              Loader.toggleLoadingWithMessage("Por favor ingrese los datos", 2000);
             return false;
             }
-
-            $ionicLoading.show();
-            PetService.track($scope.formData).then(function () {
-                $scope.resetFormData();
-                $ionicLoading.hide();
-              
-
+            PetService.track($scope.formData).then(function () {     
+                $scope.resetFormData(); 
+                $state.go("app.petlist");                         
             });
         
 };
 
-  $scope.close = function() {
-    $scope.modal.hide();
+$scope.addPicture = function () {
+  alert("Foto");
   };
 
 });

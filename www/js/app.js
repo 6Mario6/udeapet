@@ -77,7 +77,15 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         }
       }
     })
-
+     .state('app.newPet', {
+      url: '/newpet',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/newPet.html',
+          controller: 'newCtrl'
+        }
+      }
+    })
   .state('app.pet', {
     url: '/petlist/:petId',
     views: {

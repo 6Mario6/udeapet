@@ -1,6 +1,6 @@
 var app = angular.module('upet.services.pets', []);
 
-app.service("PetService", function ($q, AuthService) {
+app.service("PetService", function ($q, AuthService,Loader) {
 	var self = {
 		'page': 0,
 		'page_size': 20,
@@ -38,8 +38,8 @@ app.service("PetService", function ($q, AuthService) {
 			petQuery.find({
 				success: function (results) {
 					angular.forEach(results, function (item) {
-						var Pet = new Pet(item);
-						self.results.push(Pet)
+						var pet = new Pet(item);
+						self.results.push(pet)
 					});
 					console.debug(self.results);
 
@@ -66,7 +66,6 @@ app.service("PetService", function ($q, AuthService) {
 			var Pet = new Pet();
 			Pet.set("owner", user);
 			Pet.set("picture", file);
-			Pet.set("idm", data.idm);
 			Pet.set("name", data.name);
 			Pet.set("species", data.species);
 			Pet.set("breed", data.breed);
@@ -78,6 +77,7 @@ app.service("PetService", function ($q, AuthService) {
 				success: function (Pet) {
 					console.log("Pet tracked");
 					self.results.unshift(Pet);
+					Loader.toggleLoadingWithMessage("Se ingreso la mascota!", 2000);
 					d.resolve(Pet);
 				},
 				error: function (item, error) {

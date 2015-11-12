@@ -1,31 +1,51 @@
-<ion-view view-title="Mascotas">
- <div class="bar bar-subheader item-input-inset
+<ion-view view-title="Lista de mascotas" >
+
+
+  <div class="list">
+
+  <div class="bar bar-subheader item-input-inset
       bar-light">
-      <label class="item-input-wrapper">
-        <i class="icon ion-search placeholder-icon"></i>
-        <input type="search" ng-model="query" placeholder="Search">
-      </lable>
- </div>
-  <ion-content class="has-subheader" scroll="true">
-   <ion-list ng-hide="noData">
-   	<ion-item ng-repeat='item in pets | filter:query' class="item item-avatar" >
-       <img src="img/ionic.png">
-       <h2>{{item.name}}</h2>
-        <p>{{item.species}}</p>
-         <ion-delete-button class="ion-minus-circled" ></ion-delete-button>
-   		 </ion-item>
-      
-       <div class="list" style="text-align:center">
-    <button class="button  button-outline button-royal activated" ng-click="newPet()" >Nueva mascota</button>
+    <label class="item-input-wrapper">
+    <i class="icon ion-search placeholder-icon"></i>
+      <input type="search"  ng-model="query"  placeholder="Buscar">
+    </label>
+    <button class="button button-small button-royal" ui-sref="app.newPet">
+      <i class="ion-plus-circled"></i>
+    </button>
   </div>
 
+</div>
+
+  <ion-content  class="has-subheader">
+
+    <ion-list >
+     <ion-refresher
+        pulling-text="Pull to refresh..."
+        on-refresh="refreshItems()" >
+    </ion-refresher >
+
+    <ion-item ng-repeat='pet in pets.results | filter:query' class="item item-avatar" >
+      <div class="item item-image"
+           ng-if="pet.attributes.picture" >
+        <img ng-src="{{pet.attributes.picture.url()}}" >
+      </div >
+       <h2>{{pet.attributes.name}}</h2>
+       <p> {{pet.attributes.species}}</p>
+         <ion-delete-button class="ion-minus-circled" ></ion-delete-button>
+       </ion-item>
+    <ion-infinite-scroll
+        ng-if="pets.hasMore"
+        on-infinite="nextPage()"
+        immediate-check="false" >
+    </ion-infinite-scroll >
+
+    <div class="padding text-center"
+         ng-if="!pets.hasMore" >
+      <p >No hay mas resultados</p >
+    </div >
    </ion-list>
    
-   <div class="card" ng-show="noData" >
-      <div class="item item-text-wrap" ><span>
-         No hay mascotas agregadas. Click  <a href="javascript:" ng-click="newPet()">aqui</a> para ingresar mascota.
-         </span>
-      </div>
-   </div>
-  </ion-content>
-</ion-view>
+
+
+  </ion-content >
+</ion-view >

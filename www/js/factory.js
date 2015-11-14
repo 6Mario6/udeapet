@@ -53,16 +53,16 @@ angular.module('upet.factory', [])
         },
 
         getAll: function() {
-            var books = [];
+            var pets = [];
             var items = Object.keys(localStorage);
 
             for (var i = 0; i < items.length; i++) {
                 if (items[i] !== 'user' ) {
-                    books.push(JSON.parse(localStorage[items[i]]));
+                    pets.push(JSON.parse(localStorage[items[i]]));
                 }
             }
 
-            return books;
+            return pets;
         }
 
     };
@@ -108,7 +108,7 @@ angular.module('upet.factory', [])
 
     var API = {
         get: function(page) {
-            return $http.get(base + '/api/v1/books/' + page + '/' + perPage);
+            return $http.get(base + '/api/v1/pets/' + page + '/' + perPage);
         }
     };
 

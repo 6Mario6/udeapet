@@ -38,7 +38,12 @@ app.service("PetService", function ($q, AuthService,Loader) {
 			petQuery.find({
 				success: function (results) {
 					angular.forEach(results, function (item) {
+						
+					
+					item.attributes.id=item.id;
+					
 						var pet = new Pet(item);
+
 						self.results.push(pet)
 					});
 					console.debug(self.results);
@@ -92,4 +97,15 @@ app.service("PetService", function ($q, AuthService,Loader) {
 	};
 
 	return self;
+});
+app.service("Internalselection",function () {
+    var selectedpet = {};
+    this.setSelectedpet =function (pet) {
+        selectedpet = pet;
+    };
+
+    this.getSelectedpet = function () {
+        return selectedpet;
+
+    }
 });

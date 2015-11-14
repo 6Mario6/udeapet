@@ -24,15 +24,21 @@
         on-refresh="refreshItems()" >
     </ion-refresher >
 
-    <ion-item ng-repeat='pet in pets.results | filter:query' class="item item-avatar" >
+    <ion-item ng-repeat='pet in pets.results | filter:query' class="item item-thumbnail-left" ng-click="selectPet(pet)"
+    href="#app/detailpet">
       <div class="item item-image"
            ng-if="pet.attributes.picture" >
         <img ng-src="{{pet.attributes.picture.url()}}" >
       </div >
+       <div class="item item-image"
+           ng-if="!pet.attributes.picture" >
+        <img ng-src="img/pet.png" >
+      </div >
        <h2>{{pet.attributes.name}}</h2>
-       <p> {{pet.attributes.species}}</p>
-         <ion-delete-button class="ion-minus-circled" ></ion-delete-button>
-       </ion-item>
+        <p>{{pet.attributes.breed}}</p>
+        
+        <ion-option-button class="button-assertive icon ion-trash-a"></ion-option-button>
+   </ion-item>
     <ion-infinite-scroll
         ng-if="pets.hasMore"
         on-infinite="nextPage()"

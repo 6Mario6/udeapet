@@ -86,12 +86,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         }
       }
     })
-  .state('app.pet', {
-    url: '/petlist/:petId',
+  .state('app.detailpet', {
+    url: '/detailpet',
     views: {
       'menuContent': {
-        templateUrl: 'templates/playlist.html',
-        controller: 'PetCtrl'
+        templateUrl: 'templates/detailpet.html',
+        controller: 'detailCtrl'
       }
     }
   });

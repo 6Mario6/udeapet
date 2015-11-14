@@ -80,18 +80,13 @@ app.controller('AppCtrl', ['$rootScope', '$ionicModal', 'AuthFactory', '$locatio
         };
     }
 ]);
-app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader','$ionicModal','PetService','$ionicLoading',
-    function($scope, PetsFactory, LSFactory, Loader,$ionicModal,PetService,$ionicLoading) {
+app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader','$ionicModal','PetService','$ionicLoading','Internalselection',
+    function($scope, PetsFactory, LSFactory, Loader,$ionicModal,PetService,$ionicLoading,Internalselection) {
         $scope.pets = PetService;
         $ionicLoading.show();
         $scope.pets.load().then(function () {
         $ionicLoading.hide();
-       
-        if ($scope.pets.results.length == 0) {
-            $scope.noData=true;
-        }else{
-            $scope.noData=false;
-        }
+      
          
         });
 
@@ -107,9 +102,14 @@ app.controller('PetlistsCtrl', ['$scope', 'PetsFactory', 'LSFactory', 'Loader','
         });
         };
 
+        $scope.selectPet=function(pet){
+          Internalselection.setSelectedpet(pet);
+        };
+
     }
 ]);
-app.controller('PetCtrl', function($scope, $stateParams) {
+app.controller('detailCtrl', function($scope, $stateParams,Internalselection) {
+  $scope.pet = Internalselection.getSelectedpet();
 });
 app.controller('newCtrl', function($rootScope,$state, $ionicPopup, $ionicLoading, $scope, $window, Loader,PetService) {
   

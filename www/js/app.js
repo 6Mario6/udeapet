@@ -13,7 +13,6 @@ var app = angular.module('upet', [
   'upet.services.authentication',
   'upet.services.pets'
 ]);
-
 app.run(function ($ionicPlatform) {
   $ionicPlatform.ready(function () {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -26,11 +25,8 @@ app.run(function ($ionicPlatform) {
       StatusBar.styleBlackTranslucent();
     }
   });
-
     // Initialise Parse
-  Parse.initialize("pGjRYW5wooTCRNAX9zEtXZn3YeExbeBjSsA1I7KT", "JZoYvYpIQXn1dhpM7nE2tT5wT7Rn4cBtfCZwJVBK");
-  
-
+  Parse.initialize("pGjRYW5wooTCRNAX9zEtXZn3YeExbeBjSsA1I7KT", "JZoYvYpIQXn1dhpM7nE2tT5wT7Rn4cBtfCZwJVBK");  
 });
 app.run(['$rootScope', 'AuthFactory','$window',
     function($rootScope, AuthFactory, $window) {
@@ -59,7 +55,6 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'templates/menu.html',
     controller: 'AppCtrl'
   })
-
   .state('app.welcome', {
       url: '/welcome',
       views: {
@@ -86,6 +81,15 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         }
       }
     })
+     .state('app.editPet', {
+      url: '/editpet',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/editPet.html',
+          controller: 'editCtrl'
+        }
+      }
+    })
   .state('app.detailpet', {
     url: '/detailpet',
     views: {
@@ -96,5 +100,4 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     }
   });
   $urlRouterProvider.otherwise('/app/welcome');
-
 });

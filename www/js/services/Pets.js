@@ -80,7 +80,7 @@ app.service("PetService", function ($q, AuthService,Loader) {
 
 			Pet.save(null, {
 				success: function (Pet) {
-					console.log("Pet tracked");
+					
 					self.results.unshift(Pet);
 					Loader.toggleLoadingWithMessage("Se ingreso la mascota!", 2000);
 					d.resolve(Pet);
@@ -92,6 +92,64 @@ app.service("PetService", function ($q, AuthService,Loader) {
 			});
 
 			return d.promise;
+		},
+		'update': function (data) {
+			self.isSaving = true;
+			var d = $q.defer();
+			var Pet = Parse.Object.extend("Pet");
+			var user = AuthService.user;
+			var file = data.picture ? new Parse.File("photo.jpg", {base64: data.picture}) : null;
+
+			var Pet = new Pet();
+			Pet.id = data.id;
+			Pet.set("owner", user);
+			Pet.set("picture", file);
+			Pet.set("name", data.name);
+			Pet.set("species", data.species);
+			Pet.set("breed", data.breed);
+			Pet.set("gender", data.gender);
+			Pet.set("birthdate", data.birthdate);
+			
+
+			Pet.save(null, {
+				success: function (Pet) {
+				
+					for (i = 0; i < self.results.length; i++) { 
+						if(self.results[i].id==Pet.id){
+							self.results.splice(i,1);
+							break;
+						}
+					}
+					self.results.unshift(Pet);
+					Loader.toggleLoadingWithMessage("Se ingreso la mascota!", 2000);
+					d.resolve(Pet);
+				},
+				error: function (item, error) {
+					
+					d.reject(error);
+				}
+			});
+			return d.promise;
+		},
+		'remove': function (data) {
+			var pet = Parse.Object.extend("Pet");
+			var query = new Parse.Query(pet);
+		
+			query.get(data.id, {
+  			success: function(myObj) {
+  				for (i = 0; i < self.results.length; i++) { 
+						if(self.results[i].id==myObj.id){
+							self.results.splice(i,1);
+							break;
+						}
+					}
+   				myObj.destroy({});
+   				Loader.toggleLoadingWithMessage("Se removio la mascota!", 2000);
+ 			 },
+ 			error: function(object, error) {
+    			
+ 			 }
+			});
 		}
 
 	};

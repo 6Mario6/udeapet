@@ -90,6 +90,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         }
       }
     })
+   /*.state('app.locations', {
+      url: "/locations",
+      views: {
+        'mainContent': {
+          templateUrl: "templates/locations.html"
+        }
+      }
+    })*/
   .state('app.detailpet', {
     url: '/detailpet',
     views: {
